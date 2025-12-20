@@ -114,6 +114,37 @@ else
     fi
 fi
 
+### ------------------ Sync GRUB & Plymouth Resolution ------------------ ###
+echo "Detecting monitor resolution for seamless boot..."
+
+# Detect current resolution from X or framebuffer
+RESOLUTION=$(xrandr --current | grep '*' | awk '{print $1}' | head -n1)
+
+# Fallback if xrandr fails
+if [ -z "$RESOLUTION" ]; then
+    RESOLUTION="1920x1080"
+    echo "Could not detect resolution, using fallback: $RESOLUTION"
+else
+    echo "Detected resolution: $RESOLUTION"
+fi
+
+# Apply resolution to GRUB
+GRUB_CONF="/etc/default/grub"
+if grep -q "^GRUB_GFXMODE=" "$GRUB_CONF"; then
+    sed -i "s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=$RESOLUTION/" "$GRUB_CONF"
+else
+    echo "GRUB_GFXMODE=$RESOLUTION" >> "$GRUB_CONF"
+fi
+
+if grep -q "^GRUB_GFXPAYLOAD_LINUX=" "$GRUB_CONF"; then
+    sed -i "s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/" "$GRUB_CONF"
+else
+    echo "GRUB_GFXPAYLOAD_LINUX=keep" >> "$GRUB_CONF"
+fi
+
+echo "Resolution synced: GRUB and Plymouth should now match ($RESOLUTION)."
+
+
 ### ------------------ Finalize GRUB ------------------ ###
 echo "Regenerating GRUB config..."
 grub-mkconfig -o /boot/grub/grub.cfg
