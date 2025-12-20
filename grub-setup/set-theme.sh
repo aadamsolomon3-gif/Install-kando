@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Variables
 THEME_NAME="minegrub-world-selection"        # change to the theme you want
-THEME_BACKUP_DIR="$SCRIPT_DIR/themes"       # relative to script folder
+THEME_BACKUP_DIR="$SCRIPT_DIR/grub-themes"       # relative to script folder
 GRUB_THEME_DIR="/boot/grub/themes"
 
 # Ensure running as root
