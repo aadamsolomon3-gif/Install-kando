@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ### ------------------ Variables ------------------ ###
 # GRUB
 GRUB_THEME_DIR="$SCRIPT_DIR/grub-themes"   # optional: your GRUB theme folder
-GRUB_THEME_NAME="minegrub-world-selection"            # folder name in grub-themes
+GRUB_THEME_NAME="minegrub-world-selection" # update to your actual folder name
 
 # Plymouth
 PLYMOUTH_THEME_DIR="$SCRIPT_DIR/plymouth-themes"
@@ -105,12 +105,20 @@ else
     fi
 fi
 
-# Restart SDDM
-systemctl restart sddm.service
-
 ### ------------------ Finalize GRUB ------------------ ###
 echo "Regenerating GRUB config..."
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "=== All themes applied successfully! ==="
+echo "Your system is ready."
+
+# Prompt user to restart SDDM to see login theme
+read -rp "Do you want to restart SDDM now to apply the login screen theme? [y/N]: " restart_sddm
+if [[ "$restart_sddm" =~ ^[Yy]$ ]]; then
+    systemctl restart sddm.service
+    echo "SDDM restarted."
+else
+    echo "You can restart SDDM later with: sudo systemctl restart sddm.service"
+fi
+
 echo "Reboot your system to see seamless GRUB → Plymouth → SDDM transition."
