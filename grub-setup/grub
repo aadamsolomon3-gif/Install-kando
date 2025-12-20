@@ -1,0 +1,9 @@
+GRUB_TIMEOUT=20
+GRUB_TIMEOUT_STYLE=menu
+GRUB_GFXMODE=1920x1080
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_TERMINAL_OUTPUT="gfxterm"
+GRUB_TERMINAL_INPUT="console"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 systemd.show_status=0 i915.fastboot=1"
+GRUB_THEME="/boot/grub/themes/minegrub-world-selection/theme.txt"
+GRUB_BACKGROUND="/boot/grub/themes/minegrub-world-selection/dirt.png"

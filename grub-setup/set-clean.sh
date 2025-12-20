@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # GRUB
 GRUB_THEME_DIR="$SCRIPT_DIR/grub-themes"   # optional: your GRUB theme folder
 GRUB_THEME_NAME="minegrub-world-selection" # update to your actual folder name
+LAPTOP_GRUB_FILE="$SCRIPT_DIR/grub"        # your laptop GRUB file in the script folder
 
 # Plymouth
 PLYMOUTH_THEME_DIR="$SCRIPT_DIR/plymouth-themes"
@@ -29,6 +30,16 @@ SDDM_CONF="/etc/sddm.conf"
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run with sudo."
     exit 1
+fi
+
+### ------------------ Replace GRUB Config ------------------ ###
+if [ -f "$LAPTOP_GRUB_FILE" ]; then
+    echo "Replacing system GRUB config with laptop GRUB config..."
+    cp "$LAPTOP_GRUB_FILE" /etc/default/grub
+    chmod 644 /etc/default/grub
+    chown root:root /etc/default/grub
+else
+    echo "No laptop GRUB file found in script folder. Skipping replacement."
 fi
 
 ### ------------------ GRUB Theme ------------------ ###
@@ -52,7 +63,6 @@ fi
 
 ### ------------------ Plymouth Theme ------------------ ###
 echo "Applying Plymouth theme..."
-# Remove existing
 rm -rf "$PLYMOUTH_DIR/$PLYMOUTH_THEME_NAME"
 cp -r "$PLYMOUTH_THEME_DIR/$PLYMOUTH_THEME_NAME" "$PLYMOUTH_DIR/"
 chmod -R 755 "$PLYMOUTH_DIR/$PLYMOUTH_THEME_NAME"
@@ -87,7 +97,6 @@ grep -q "GRUB_GFXPAYLOAD_LINUX" "$GRUB_CONF" || echo 'GRUB_GFXPAYLOAD_LINUX=keep
 
 ### ------------------ SDDM Theme ------------------ ###
 echo "Applying SDDM theme..."
-# Remove existing
 rm -rf "$SDDM_DIR/$SDDM_THEME_NAME"
 cp -r "$SDDM_THEME_DIR/$SDDM_THEME_NAME" "$SDDM_DIR/"
 chmod -R 755 "$SDDM_DIR/$SDDM_THEME_NAME"
